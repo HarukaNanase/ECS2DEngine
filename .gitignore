@@ -1,0 +1,15 @@
+.vs/
+intermediate/
+.vs/*
+
+.git/
+*.ipch
+*.pdb
+*.ipdb
+*.iobj
+*.obj
+*.tlog
+*.log
+*.ilk
+.log
+.tlog
