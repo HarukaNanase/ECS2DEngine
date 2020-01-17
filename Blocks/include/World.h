@@ -62,6 +62,7 @@ TObject& World::AddGameObject(TObject& _object)
 		object->OnInitialize();
 		CurrentEntityId++;
 		GameObjects.push_back(object);
+		//RegisterObject(*object)
 		return *object;
 	}
 

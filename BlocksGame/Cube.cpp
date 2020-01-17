@@ -20,9 +20,9 @@ Cube::Cube(Texture& _tex, const Vector2& _position)
 
 void Cube::OnInitialize()
 {
-	AddComponent<CollisionComponent>(GetComponent<TransformComponent>().GetPosition(),
-		GetComponent<TransformComponent>().GetSize(), *this, [&](GameObject& _arg) { this->OnCollisionEnter(_arg); }, [&](GameObject& _arg) { this->OnCollisionExit(_arg); }
-		);
+	//AddComponent<CollisionComponent>(GetComponent<TransformComponent>().GetPosition(),
+	//	GetComponent<TransformComponent>().GetSize(), *this, [&](GameObject& _arg) { this->OnCollisionEnter(_arg); }, [&](GameObject& _arg) { this->OnCollisionExit(_arg); }
+	//	);
 
 	GetComponent<InputComponent>().AddBinding("A", std::function<void(GameObject & _object)>([this](GameObject& _object) { _object.GetComponent<TransformComponent>().GetPosition().x -= 0.5f * _object.GetWorld()->GetDeltaTime(); }));
 	GetComponent<InputComponent>().AddBinding("D", std::function<void(GameObject & _object)>([this](GameObject& _object) { _object.GetComponent<TransformComponent>().GetPosition().x += 0.5f * _object.GetWorld()->GetDeltaTime(); }));
@@ -45,9 +45,9 @@ void Cube::OnDestroy()
 
 void Cube::OnUpdate()
 {
-	if (IsFalling) {
-		GetComponent<TransformComponent>().GetPosition().y -= 0.05f * GetWorld()->GetDeltaTime();
-	}
+	//if (IsFalling) {
+	//	GetComponent<TransformComponent>().GetPosition().y -= 0.05f * GetWorld()->GetDeltaTime();
+	//}
 	//GetComponent<TransformComponent>().GetPosition().x -= 0.05f * GetWorld()->GetDeltaTime();
 }
 
@@ -55,7 +55,7 @@ void Cube::OnCollisionEnter(GameObject& _collidedWith)
 {
 	auto otherComp = _collidedWith.GetComponent<TransformComponent>();
 	auto myComp = GetComponent<TransformComponent>();
-	if (otherComp.GetPosition().y < myComp.GetPosition().y && _collidedWith.HasTag("cube")) {
+	if (otherComp.GetPosition().y < myComp.GetPosition().y) {
 		std::cout << "Cube " << this->GetObjectId() << " going to fall." << std::endl;
 		IsFalling = false;
 		this->GetComponent<TransformComponent>().GetPosition().y = otherComp.GetPosition().y + otherComp.GetSize().y / 2 + myComp.GetSize().y/2;
@@ -66,7 +66,7 @@ void Cube::OnCollisionEnter(GameObject& _collidedWith)
 void Cube::OnCollisionExit(GameObject& _collided)
 {
 	auto otherComp = _collided.GetComponent<TransformComponent>();
-	if (otherComp.GetPosition().y < this->GetComponent<TransformComponent>().GetPosition().y) {
+	if (otherComp.GetPosition().y < this->GetComponent<TransformComponent>().GetPosition().y && _collided.HasTag("cube")) {
 		IsFalling = true;
 	}
 }

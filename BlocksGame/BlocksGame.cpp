@@ -11,7 +11,8 @@
 #include "GameObject.h"
 #include "CubeColumn.h"
 #include "EndPoint.h"
-
+#include "Grid.h"
+#include "World.h"
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
@@ -62,16 +63,19 @@ void BlocksGame::SetupWorldObjects()
 	GameObject& background = GameWorld.CreateGameObject();
 	background.AddComponent<SpriteComponent>(TexManager.Get("background"), Color{ 0xff, 0xff, 0xff, 0xff });
 	GameObject& groundCollider = GameWorld.CreateGameObject();
-	groundCollider.AddComponent<TransformComponent>(0, -150, 680, 2);
+	groundCollider.AddComponent<TransformComponent>(0, -120, 680, 2);
 	auto& transformComp = groundCollider.GetComponent<TransformComponent>();
 	groundCollider.AddComponent<CollisionComponent>(
 		transformComp.GetPosition(), transformComp.GetSize(), groundCollider
 	);
 
-	//GameWorld.AddGameObject(groundCollider);
+	Grid _grid(&TexManager.Get("crate"));
+	Grid& grid = GameWorld.AddGameObject(_grid);
+	grid.SpawnColumn();
+	GameWorld.AddGameObject(groundCollider);
 
-	CubeColumn column(TexManager.Get("crate"), Vector2(320, -135));
-	GameWorld.AddGameObject(column);
+	//CubeColumn column(TexManager.Get("crate"), Vector2(320, -119));
+	//GameWorld.AddGameObject(column);
 	EndPoint end = EndPoint(Vector2(0, -135));
 	GameWorld.AddGameObject(end);
 
@@ -82,5 +86,10 @@ void BlocksGame::SetupWorldObjects()
 
 void BlocksGame::OnWorldUpdate()
 {
+	TimeElapsed += GameWorld.GetDeltaTime() * 0.001;
+	if (TimeElapsed >= 3) {
+
+	}
+//	std::cout << "World Update!" << std::endl;
 
 }

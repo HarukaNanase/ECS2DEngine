@@ -11,6 +11,9 @@ void Game::Init()
 void Game::Run()
 {
 	Init();
-	while (GameWorld.IsRunning())
+	while (GameWorld.IsRunning()) {
+		OnWorldUpdate();
 		GameWorld.Update(GameWorld.GetDeltaTime());
+	}
+		
 }

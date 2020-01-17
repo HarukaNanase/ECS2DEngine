@@ -50,7 +50,7 @@ void World::Update(float _deltaTime)
 
 	this->GetSystem<InputSystem>().Update(this->DeltaTime);
 	this->GetSystem<AudioSystem>().Update(this->DeltaTime);
-	this->GetSystem<CollisionSystem>().Update(this->DeltaTime);
+//	this->GetSystem<CollisionSystem>().Update(this->DeltaTime);
 	this->GetSystem<RenderSystem>().Update(this->DeltaTime);
 	
 	Now = SDL_GetPerformanceCounter();
@@ -72,6 +72,7 @@ float World::GetDeltaTime()
 
 void World::RegisterObject(GameObject& _object)
 {
+	
 	auto objectComponents = _object.GetComponentMask();
 	for (auto& systemPair : Systems) {
 		auto systemComponents = systemPair.second->GetComponentMask();

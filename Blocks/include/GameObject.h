@@ -12,7 +12,7 @@ class GameObject
 {
 	unsigned int ObjectId;
 	class World* TheWorld;	
-
+	bool IsRegistered = false;
 	
 	struct ComponentDestructor {
 		void operator()(Component* _component) {

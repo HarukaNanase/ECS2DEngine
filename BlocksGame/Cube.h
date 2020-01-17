@@ -7,6 +7,7 @@ class Cube : public GameObject
 public:
 	Cube() {};
 	bool IsFalling = false;
+	
 	Cube(Texture& _tex, const Vector2& _position);
 	virtual void OnInitialize() override;
 	virtual void OnDestroy() override;
