@@ -20,10 +20,9 @@ Vector2& TransformComponent::GetSize()
 	return Size;
 }
 
-SDL_Rect& TransformComponent::GetTransform()
+SDL_FRect TransformComponent::GetTransform()
 {
-	SDL_Rect t{ Position.x, Position.y, Size.x, Size.y };
-	return t;
+	return { Position.x, Position.y, Size.x, Size.y };
 }
 
 void TransformComponent::SetTransform(Vector2 _position)

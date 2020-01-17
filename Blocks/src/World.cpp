@@ -6,12 +6,14 @@
 #include <CollisionSystem.h>
 #include <RenderSystem.h>
 #include "Vector2.h"
+#include "sdl.h"
 World::World()
 {
 	auto position = Vector2(0, 0);
-	auto size = Vector2(1280, 720);
+	auto size = Vector2(640, 360);
 	Camera = Camera2D(position, size);
-
+	LastTime = SDL_GetPerformanceCounter();
+	Now = LastTime;
 }
 GameObject& World::CreateGameObject()
 {
@@ -22,61 +24,50 @@ GameObject& World::CreateGameObject()
 }
 
 
-//
-//void World::AddGameObject(GameObject _object)
-//{
-//	_object.SetObjectId(this->CurrentEntityId);
-//	this->CurrentEntityId++;
-//	this->GameObjects.push_back(_object);
-//}
 
-void World::RemoveGameObject(unsigned int _id)
+
+void World::RemoveGameObject(GameObject& _object)
 {
-	for (auto it = GameObjects.begin(); it != GameObjects.end(); ++it) {
-		if ((*it)->GetObjectId() == _id) {
-			for (auto& system : this->Systems) {
-				;
-			}
-			GameObjects.erase(it);
-			//delete obj;
-			return;
-		}
-	}
 	
-}
+	for (auto& systemPair : this->Systems) {
+		auto& system = systemPair.second;
+		system->RemoveGameObject(_object);
+	}
+
+	GameObjects.erase(std::remove_if(GameObjects.begin(), GameObjects.end(), [&](std::shared_ptr<GameObject> _obj) {
+		return _object.GetObjectId() == _obj->GetObjectId();
+	}), GameObjects.end());
+
+	//std::cout << "Object to remove: " << (*objectIt)->GetObjectId() << " repositioned to end" << std::endl;
+
+	}
 
 void World::Update(float _deltaTime)
 {
-	this->GetSystem<InputSystem>().Update(_deltaTime);
-	//this->GetSystem<AudioSystem>().Update(_deltaTime);
-	this->GetSystem<CollisionSystem>().Update(_deltaTime);
-	this->GetSystem<RenderSystem>().Update(_deltaTime);
-	//for (auto& sys : Systems) {
-		//sys.second->Update(_deltaTime);
-	//}
+	LastTime = Now;
+	for (auto& object : GameObjects)
+		object->Update();
+
+	this->GetSystem<InputSystem>().Update(this->DeltaTime);
+	this->GetSystem<AudioSystem>().Update(this->DeltaTime);
+	this->GetSystem<CollisionSystem>().Update(this->DeltaTime);
+	this->GetSystem<RenderSystem>().Update(this->DeltaTime);
+	
+	Now = SDL_GetPerformanceCounter();
+	this->DeltaTime = (double)((Now - LastTime) * 1000) / (double)SDL_GetPerformanceFrequency();
 
 }
-std::vector < std::shared_ptr<GameObject> > World::GetGameObjects()
-{
-	return GameObjects;
-}
-//
-//std::vector<GameObject> World::GetGameObjects()
-//{
-//	return this->GameObjects;
-//}
-
 
 Camera2D& World::GetCamera2D()
 {
 	return Camera;
 }
 
-void World::AddSystem(SystemID _id, std::shared_ptr<System> _system)
+
+
+float World::GetDeltaTime()
 {
-	std::cout << "System ID Registered: " << _id << std::endl;
-	this->Systems.emplace(_id, _system);
-	_system->SetWorld(this);
+	return this->DeltaTime;
 }
 
 void World::RegisterObject(GameObject& _object)
@@ -92,7 +83,7 @@ void World::RegisterObject(GameObject& _object)
 
 void World::RegisterAllObjects()
 {
-	for (auto obj : GameObjects) {
+	for (auto& obj : GameObjects) {
 		RegisterObject(*obj);
 	}
 }
@@ -108,3 +99,5 @@ void World::SetIsRunning(bool _running)
 {
 	Running = _running;
 }
+
+

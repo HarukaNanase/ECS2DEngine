@@ -1,23 +1,33 @@
 #include "CollisionComponent.h"
-
-int CollisionComponent::GetTop()
-{
-	return Position.y;
+#include "GameObject.h"
+CollisionComponent::CollisionComponent(Vector2& _position, Vector2& _size, GameObject& _owner, std::function<void(GameObject & _arg)> enterFunc, std::function<void(GameObject & _arg)> exitFunc)
+: Position(_position), Width(_size.x), Height(_size.y) {
+		if (enterFunc != nullptr) {
+			OnCollisionEnter = enterFunc;
+		}
+		if (exitFunc != nullptr) {
+			OnCollisionExit = exitFunc;
+		}
 }
 
-int CollisionComponent::GetBottom()
+float CollisionComponent::GetTop()
 {
-	return Position.y + Height;
+	return Position.y - Height/2;
 }
 
-int CollisionComponent::GetLeft()
+float CollisionComponent::GetBottom()
 {
-	return Position.x;
+	return Position.y + Height/2;
 }
 
-int CollisionComponent::GetRight()
+float CollisionComponent::GetLeft()
 {
-	return Position.x + Width;
+	return Position.x - Width/2;
+}
+
+float CollisionComponent::GetRight()
+{
+	return Position.x + Width/2;
 }
 
 void CollisionComponent::SetTop(int _top)

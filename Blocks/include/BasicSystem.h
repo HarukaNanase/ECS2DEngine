@@ -14,7 +14,6 @@ class BasicSystem
 	virtual void OnUpdate(GameObject& _object) = 0;
 	virtual void OnInitialize() = 0;
 	
-	void RemoveGameObject(GameObject* _object);
 	void SetWorld(class World& world);
 	class World* TheWorld;
 	std::vector<GameObject*> GameObjects;
@@ -23,7 +22,7 @@ class BasicSystem
 public:
 	BasicSystem() {};
 	BasicSystem(World* _world);
-	~BasicSystem();
+	virtual ~BasicSystem();
 	virtual void Initialize();
 	virtual void Destroy();
 	class World* GetWorld();
@@ -32,6 +31,7 @@ public:
 	virtual void Update(float _deltaTime);
 	void AddGameObject(GameObject& _object);
 
+	void RemoveGameObject(GameObject& _object);
 	template<typename T>
 	void RequiresComponent() {
 		if (std::is_base_of<Component, T>().value) {

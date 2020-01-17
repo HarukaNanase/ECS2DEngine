@@ -3,52 +3,64 @@
 #include <iostream>
 #include <World.h>
 using namespace std::placeholders;
+
+bool InputSystem::IsClickOnObject(const Vector2& _mousePosition, GameObject* _obj)
+{
+	if (_obj->HasComponent<TransformComponent>()) {
+		auto transform = _obj->GetComponent<TransformComponent>();
+		Vector2 objectCenter = transform.GetPosition();
+		auto objectSize = transform.GetSize();
+		auto objectBoundTop = objectCenter.y + objectSize.y / 2;
+		auto objectBoundBottom = objectCenter.y - objectSize.y / 2;
+		auto objectBoundRight = objectCenter.x + objectSize.x / 2;
+		auto objectBoundLeft = objectCenter.x - objectSize.x / 2;
+		if (_mousePosition.x <= objectBoundRight && _mousePosition.x >= objectBoundLeft
+			&& _mousePosition.y >= objectBoundBottom && _mousePosition.y <= objectBoundTop) {
+
+			return true;
+		}
+	}
+
+
+	return false;
+}
+
+bool InputSystem::IsClickOnGame(const Vector2& _mousePosition, const Vector2& _gameRes)
+{
+	return !(_mousePosition.x < (-_gameRes.x / 2) || _mousePosition.x >(_gameRes.x / 2) || _mousePosition.y < (-_gameRes.y / 2) || _mousePosition.y >(_gameRes.y / 2));
+}
+
 void InputSystem::Update(float _deltaTime)
 {	
+	//std::vector<GameObject*> objects = GetGameObjects();
 	SDL_PumpEvents();
 	TheMouse.MouseMask = SDL_GetMouseState(&TheMouse.x, &TheMouse.y);
-	
-	for (auto& keysAndEvents : RegisteredEvents) {
-		if ((TheMouse.MouseMask & SDL_BUTTON(keysAndEvents.first))) {
-
-			auto& events = keysAndEvents.second;
-			for (auto& _event : events) {
-				auto object = _event.Object;
-				if (object.HasComponent<TransformComponent>() && (_event.Action == SDL_BUTTON_LEFT)) {
-					auto transform = object.GetComponent<TransformComponent>();
+	auto objects = this->GetGameObjects();
+	for (auto object : objects) {
+		auto& inputComp = object->GetComponent<InputComponent>();
+		if(inputComp.IsEnabled()){
+			auto bindings = inputComp.GetBindings();
+			for (auto& entry : bindings) {
+				if (TheMouse.MouseMask && SDL_BUTTON(entry.first) && entry.first == SDL_BUTTON_LEFT) {
 					auto camera = GetWorld()->GetCamera2D();
-					auto objectPosition = transform.GetPosition();
-					auto inWorldMouse = camera.ScreenToGameRaycast(TheMouse.x, TheMouse.y);
-					auto objectSize = transform.GetSize();
-					objectSize.x = objectSize.x * ((float) camera.Resolution.x / camera.Size.x);
-					objectSize.y = objectSize.y * ((float) camera.Resolution.y / camera.Size.y);
-					auto objectBoundLeft = objectPosition.x - objectSize.x / 2;
-					auto objectBoundRight = objectPosition.x + objectSize.x / 2;
-					auto objectBoundTop = objectPosition.y - objectSize.y / 2;
-					auto objectBoundBottom = objectPosition.y + objectSize.y / 2;
-					
-					if (inWorldMouse.x >= objectBoundLeft && inWorldMouse.x <= objectBoundRight
-						&& inWorldMouse.y >= objectBoundTop && inWorldMouse.y <= objectBoundBottom) {
-					
-						_event.CallbackMethod();
+					auto inWorldMouse = camera.ScreenToWorldRaycast(TheMouse.x, TheMouse.y);
+					if (!IsClickOnGame(inWorldMouse, camera.Size))
+						continue;
+					if (IsClickOnObject(inWorldMouse, object)) {
+						auto callback = std::bind(entry.second, *object);
+						callback();
 					}
-
 				}
-				
-			
+				else if (TheKeyboard.Keys[entry.first]) {
+					auto callback = std::bind(entry.second, *object);
+					callback();
+				}
+
 			}
+
 		}
-		else if (TheKeyboard.Keys[keysAndEvents.first]) {
-			auto& events = keysAndEvents.second;
-			for (auto& _event : events) {
-				_event.CallbackMethod();
-			}
-		
-		}
-		
-		
 	}
-	
+		
 
 	for (auto& typesAndEvents : WorldEvents) {
 		if (SDL_HasEvent(typesAndEvents.first)) {
@@ -69,12 +81,6 @@ InputSystem::InputSystem()
 {
 }
 
-void InputSystem::RegisterObjectEvent(GameObject& _gameObject, int16_t _sdlEventCode, std::function<void(GameObject& _objectToCall)> _callback)
-{
-	auto& eventsForKey = RegisteredEvents[_sdlEventCode];
-	eventsForKey.push_back(InputEventBinding{ _gameObject, std::bind(_callback, _gameObject) , _sdlEventCode});
-	
-}
 
 
 void InputSystem::RegisterWorldEvent(World* _world, SDL_EventType _sdlEventType, std::function<void(World* _world, const SDL_Event& _event)> _callback)
@@ -87,21 +93,16 @@ void InputSystem::RegisterWorldEvent(World* _world, SDL_EventType _sdlEventType,
 
 void InputSystem::OnObjectAdded(GameObject& _object)
 {
-	auto& objectInputComponent = _object.GetComponent<InputComponent>();
-	auto objectBindings = objectInputComponent.GetBindings();
-	// create input events for this component
-	for (auto& binding : objectInputComponent.GetBindings()) {
-		auto key = binding.first;
-		auto callback = binding.second;
-		//get existing events for this key
-		auto& eventsForKey = RegisteredEvents[key];
-		InputEventBinding newEvent{ _object, std::bind(callback, _object), key };
-		eventsForKey.push_back(newEvent);
-	}
+
 }
 
 
 
+
+void InputSystem::OnObjectRemoved(GameObject& _object)
+{
+
+}
 
 void InputSystem::OnInitialize()
 {

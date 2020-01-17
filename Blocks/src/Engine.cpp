@@ -4,9 +4,6 @@
 
 
 
-
-
-
 bool Engine::InitEngine()
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
@@ -14,17 +11,7 @@ bool Engine::InitEngine()
 		return false;
 	}
 
-	Collision.Initialize();
-
-	SoundManager = AudioManager(Audio.GetSoundEngine());
-	
-	
-	SoundManager.LoadResource("BackgroundMusic", "assets\\audio\\Electronic Fantasy.ogg");
-	Audio.Play2DSoundFromMemory(SoundManager, "BackgroundMusic", true);
-
 	return true;
-	
-
 
 }
 
@@ -42,7 +29,6 @@ Engine::Engine()
 		exit(EXIT_FAILURE);
 	}
 
-	SoundManager = AudioManager(Audio.GetSoundEngine());
 }
 
 
@@ -52,41 +38,11 @@ Engine::~Engine()
 
 
 
-//TextureManager& Engine::GetTextureManager()
-//{
-	//return GetRenderSystem().GetTextureManager();
-//}
-
-//RenderSystem& Engine::GetRenderSystem()
-//{
-	//return Renderer;
-//}
-
-CollisionSystem& Engine::GetCollisionSystem()
-{
-	return Collision;
-}
-
-EventSystem& Engine::GetEventSystem()
-{
-	return Events;
-}
-
-
 
 void Engine::SetIsRunning(bool _state)
 {
 	ShouldRun = _state;
 }
-
-
-
-
-double Engine::GetDeltaTime()
-{
-	return 0;
-}
-
 
 
 bool Engine::isRunning()

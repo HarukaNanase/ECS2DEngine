@@ -1,6 +1,6 @@
 #pragma once
 #include "Component.h"
-#include "Transform2D.h"
+
 #include "SpriteComponent.h"
 #include "SoundComponent.h"
 #include <unordered_map>
@@ -24,19 +24,30 @@ class GameObject
 	void Initialize();
 	std::unordered_map<ComponentID, std::shared_ptr<Component>> ObjectComponents;
 	std::bitset<MAX_NUM_COMPONENTS> ExistingComponents;
+	std::vector<std::string> Tags;
 public:
+	~GameObject();
+	void AddTag(const std::string& _tag);
+	void RemoveTag(const std::string& _tag);
+	bool HasTag(const std::string& _tag);
+	bool IsActive;
 	GameObject();
 	GameObject(unsigned int _id);
 	GameObject(unsigned int _id, World* _world);
-	virtual void Update(class World& _world, float _deltaTime);
+	virtual void Update();
+	virtual void OnUpdate();
 	virtual void OnInitialize();
+	virtual void OnDestroy();
+
+
 	unsigned int GetObjectId();
 	void SetObjectId(unsigned int _id);
 	class World* GetWorld();
 	void SetWorld(World* _world);
 
 	void Register();
-
+	void Destroy();
+	void Disable();
 	std::bitset<MAX_NUM_COMPONENTS> GetComponentMask();
 	//std::unordered_map <ComponentID, std::unique_ptr<Component>> ObjectComponents;
 

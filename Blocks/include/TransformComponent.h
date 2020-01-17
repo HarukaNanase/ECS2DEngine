@@ -2,6 +2,8 @@
 #include "Vector2.h"
 #include "Component.h"
 #include "SDL.h"
+
+
 class TransformComponent : public Component
 {
 	SDL_Rect Rect;
@@ -9,11 +11,11 @@ class TransformComponent : public Component
 	Vector2 Size;
 
 public:
-	TransformComponent(int x, int y);
-	TransformComponent(int x, int y, int w, int h);
+	TransformComponent(int x = 0, int y = 0);
+	TransformComponent(int x = 0, int y = 0, int w = 0, int h = 0);
     Vector2& GetPosition();
 	Vector2& GetSize();
-	SDL_Rect& GetTransform();
+	SDL_FRect GetTransform();
 	void SetTransform(Vector2 _position);
 };
 

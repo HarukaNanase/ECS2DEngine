@@ -14,10 +14,8 @@ class Engine
 {
 private:
 	//RenderSystem Renderer;
-	AudioSystem Audio;
-	CollisionSystem Collision;
-	EventSystem Events;
-	AudioManager SoundManager;
+	//EventSystem Events;
+	
 	bool ShouldRun = true;
 
 public:
@@ -26,13 +24,8 @@ public:
 	Engine();
 	~Engine();
 
-	//TextureManager& GetTextureManager();
-	//RenderSystem& GetRenderSystem();
-	CollisionSystem& GetCollisionSystem();
-	EventSystem& GetEventSystem();
-
 	void SetIsRunning(bool _state);
-	double GetDeltaTime();
+	
 	bool isRunning();
 
 protected:

@@ -11,6 +11,7 @@ class Component
 {
 	ComponentID Id;
 	class GameObject* Owner;
+	bool Enabled = true;
 public:
 	virtual ~Component();
 
@@ -19,6 +20,8 @@ public:
 
 	virtual void Destroy();
 	virtual void Initialize();
+	bool IsEnabled();
+	void SetIsEnabled(bool _enabled);
 };
 
 

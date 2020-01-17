@@ -2,27 +2,32 @@
 #include "Vector2.h"
 #include "Component.h"
 #include <functional>
+
+using namespace std::placeholders;
+
+typedef std::function<void(GameObject & _arg)> ObjectFunction;
 class CollisionComponent : public Component
 {
 
 private:
-	
-public:
-	//CollisionComponent() { Position = Vector2(); Height = 0;  Width = 0; };
-	//CollisionComponent(Vector2 _position, Vector2 _size) :Position(_position), Width(_size.x), Height(_size.y) {};
 
-	CollisionComponent(Vector2& _position, Vector2& _size, std::function<void(GameObject& _collidedWith)> _callback) : Position(_position), Width(_size.x), Height(_size.y), Callback(_callback) {};
-	std::function<void(GameObject & _collidedWith)> Callback;
+public:
+
+	CollisionComponent(Vector2& _position, Vector2& _size, GameObject& _owner, std::function<void(GameObject & _arg)> enterFunc = nullptr,
+		std::function<void(GameObject & _arg)> exitFunc = nullptr);
+	
+	
+	std::function<void(GameObject & _collidedWith)> OnCollisionEnter;
+	std::function<void(GameObject & _collidedWith)> OnCollisionExit;
 	Vector2& Position;
 	int Width;
 	int Height;
-	int GetTop();
-	int GetBottom();
-	int GetLeft();
-	int GetRight();
+	float GetTop();
+	float GetBottom();
+	float GetLeft();
+	float GetRight();
 	void SetTop(int _top);
 	void SetBottom(int _bottom);
 	void SetLeft(int _left);
 	void SetRight(int _right);
 };
-

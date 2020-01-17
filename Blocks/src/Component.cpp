@@ -22,3 +22,13 @@ void Component::Destroy()
 void Component::Initialize()
 {
 }
+
+bool Component::IsEnabled()
+{
+	return Enabled;
+}
+
+void Component::SetIsEnabled(bool _enabled)
+{
+	this->Enabled = _enabled;
+}

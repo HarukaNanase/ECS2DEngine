@@ -5,33 +5,32 @@
 #define WINDOW_TITLE "Miniclip Challenge - Blocks"
 
 
-const void RenderSystem::Draw(SpriteComponent& _spriteToDraw, SDL_Rect* _transform)
+const void RenderSystem::Draw(SpriteComponent& _spriteToDraw, SDL_FRect* _transform)
 {
-	SDL_SetTextureColorMod(_spriteToDraw.GetTexture()->GetTex(), _spriteToDraw.GetColor().r, _spriteToDraw.GetColor().g, _spriteToDraw.GetColor().b);
-	SDL_RenderCopy(this->Renderer, _spriteToDraw.GetTexture()->GetTex(), NULL, _transform);
+	SDL_SetTextureColorMod(_spriteToDraw.GetTexture().GetTex(), _spriteToDraw.GetColor().r, _spriteToDraw.GetColor().g, _spriteToDraw.GetColor().b);
+	SDL_RenderCopyF(this->Renderer, _spriteToDraw.GetTexture().GetTex(), NULL, _transform);
 }
 
 
 const void RenderSystem::Draw(World& _world)
 {
-	
 	this->ClearScreen();
 
 	for (auto& renderable : GetGameObjects()) {
-		if (renderable->HasComponent<SpriteComponent>()) {
+		auto& spriteComponent = renderable->GetComponent<SpriteComponent>();
+		if (spriteComponent.IsEnabled()) {
 			if (renderable->HasComponent<TransformComponent>()) {
 				TransformComponent& transform = renderable->GetComponent<TransformComponent>();
 				Camera2D& camera = GetWorld()->GetCamera2D();
-				SDL_Rect target = transform.GetTransform();
+				SDL_FRect target = transform.GetTransform();
 				auto& position = transform.GetPosition();
 				auto& size = transform.GetSize();
-				float scaleX = GetWindowWidth() / camera.Size.x;
-				float scaleY = GetWindowHeight() / camera.Size.y;
-				target.x = (position.x + (camera.Size.x / 2) - camera.Position.x - size.x / 2);
-				target.y = (position.y + (camera.Size.y / 2) - camera.Position.y - size.y / 2);
-				target.w = (int)transform.GetSize().x;
-				target.h = (int)transform.GetSize().y;
+				target.x = (position.x + (camera.Size.x / 2) - camera.Position.x - size.x/2);
+				target.y = (-position.y + (camera.Size.y / 2) - camera.Position.y - size.y/2);
+				target.w = size.x;
+				target.h = size.y;
 				Draw(renderable->GetComponent<SpriteComponent>(), &target);
+
 			}
 			else {
 				Draw(renderable->GetComponent<SpriteComponent>(), nullptr);
@@ -70,19 +69,12 @@ const void RenderSystem::ClearScreen()
 const int RenderSystem::GetWindowWidth()
 {
 	return SDL_GetWindowSurface(this->WindowHandle)->w;
-	/*SDL_DisplayMode dm;
-	SDL_GetDesktopDisplayMode(0, &dm);
-	return dm.w;*/
-	
-
 }
 
 const int RenderSystem::GetWindowHeight()
 {
 	return SDL_GetWindowSurface(this->WindowHandle)->h;
-	/*SDL_DisplayMode dm;
-	SDL_GetDesktopDisplayMode(0, &dm);
-	return dm.h;*/
+
 }
 
 
@@ -124,7 +116,7 @@ void RenderSystem::Initialize()
 		std::cout << "Error creating SDL Window: " << SDL_GetError() << std::endl;
 	}
 
-	if (!InitRenderer(-1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) {
+	if (!InitRenderer(-1, SDL_RENDERER_ACCELERATED )) {
 		std::cout << "Error creating SDL Renderer: " << SDL_GetError() << std::endl;;
 	}
 	TexManager.SetRenderer(GetSDLRenderer());
@@ -150,7 +142,8 @@ void RenderSystem::Destroy()
 {
 	SDL_DestroyRenderer(this->Renderer);
 	SDL_DestroyWindow(this->WindowHandle);
+	Renderer = nullptr;
+	WindowHandle = nullptr;
 	SDL_Quit();
 
-	Renderer = nullptr;
 }

@@ -24,7 +24,7 @@ public:
 	virtual void Initialize() override;
 	virtual void Update(float _deltaTime) override;
 	virtual void Destroy() override;
-	const void Draw(SpriteComponent& _sprite, SDL_Rect* _component);
+	const void Draw(SpriteComponent& _sprite, SDL_FRect* _component);
 	const void Draw(class World& _world);
 	void RenderToScreen();
 	const void ClearScreen();

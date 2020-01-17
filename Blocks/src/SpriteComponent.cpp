@@ -3,11 +3,10 @@
 #include "GameObject.h"
 
 
-SpriteComponent::SpriteComponent(Texture* _tex, Color _color)
+SpriteComponent::SpriteComponent(Texture& _tex, Color _color) : Tex(_tex)
 {
-	this->Tex = _tex;
-	this->SpriteColor = _color;
 
+	this->SpriteColor = _color;
 }
 
 const Color& SpriteComponent::GetColor()
@@ -17,7 +16,7 @@ const Color& SpriteComponent::GetColor()
 }
 
 
-Texture* SpriteComponent::GetTexture()
+Texture& SpriteComponent::GetTexture()
 {
 	return this->Tex;
 }
@@ -34,7 +33,7 @@ void SpriteComponent::SetGameObject(GameObject* _owner)
 	Component::SetOwner(_owner);
 }
 
-void SpriteComponent::SetTexture(Texture* _tex)
+void SpriteComponent::SetTexture(Texture& _tex)
 {
 	Tex = _tex;
 }

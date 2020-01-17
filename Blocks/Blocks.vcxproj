@@ -31,6 +31,7 @@
     <ClCompile Include="src\EntityComponents.cpp" />
     <ClCompile Include="src\Event.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\GUIElement.cpp" />
     <ClCompile Include="src\GUISystem.cpp" />
@@ -45,7 +46,6 @@
     <ClCompile Include="src\System.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
-    <ClCompile Include="src\Transform2D.cpp" />
     <ClCompile Include="src\TransformComponent.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
@@ -60,6 +60,7 @@
     <ClInclude Include="include\EntityComponents.h" />
     <ClInclude Include="include\Event.h" />
     <ClInclude Include="include\EventSystem.h" />
+    <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\GameObject.h" />
     <ClInclude Include="include\GUIElement.h" />
     <ClInclude Include="include\GUISystem.h" />
@@ -76,7 +77,6 @@
     <ClInclude Include="include\IDManager.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\TextureManager.h" />
-    <ClInclude Include="include\Transform2D.h" />
     <ClInclude Include="include\TransformComponent.h" />
     <ClInclude Include="include\Vector2.h" />
     <ClInclude Include="include\World.h" />
@@ -88,6 +88,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Blocks</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>BlocksEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -104,13 +105,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -186,7 +187,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)dependencies\libagar-1.5.0\lib\$(Platform)\ag_gui.lib;$(SolutionDir)dependencies\irrKlang-1.6.0\lib\$(Platform)\irrKlang.lib;$(SolutionDir)dependencies\OpenAL_Soft-1.20\lib\$(Platform)\common.lib;$(SolutionDir)dependencies\OpenAL_Soft-1.20\lib\$(Platform)\OpenAL32.lib;$(SolutionDir)dependencies\SDL2_Image-2.0.5\lib\$(Platform)\SDL2_Image.lib;d3d12.lib;$(SolutionDir)dependencies\SDL_2.0\lib\$(Platform)\SDL2.lib;$(SolutionDir)dependencies\SDL_2.0\lib\$(Platform)\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)dependencies\irrKlang-1.6.0\lib\$(Platform)\irrKlang.lib;$(SolutionDir)dependencies\OpenAL_Soft-1.20\lib\$(Platform)\common.lib;$(SolutionDir)dependencies\OpenAL_Soft-1.20\lib\$(Platform)\OpenAL32.lib;$(SolutionDir)dependencies\SDL2_Image-2.0.5\lib\$(Platform)\SDL2_Image.lib;d3d12.lib;$(SolutionDir)dependencies\SDL_2.0\lib\$(Platform)\SDL2.lib;$(SolutionDir)dependencies\SDL_2.0\lib\$(Platform)\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

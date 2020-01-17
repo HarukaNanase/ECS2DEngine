@@ -10,15 +10,14 @@ void BasicSystem::AddGameObject(GameObject& _object)
 
 
 
-void BasicSystem::RemoveGameObject(GameObject* _object)
+void BasicSystem::RemoveGameObject(GameObject& _object)
 {
-	for (auto it = GameObjects.begin(); it != GameObjects.end(); ++it) {
-		if ((*it)->GetObjectId() == _object->GetObjectId()) {
-			GameObjects.erase(it);
-		}
-	}
-	OnObjectRemoved(*_object);
+	this->OnObjectRemoved(_object);
+	this->GameObjects.erase(std::remove(GameObjects.begin(), GameObjects.end(), &_object), GameObjects.end());
+
 }
+
+
 
 void BasicSystem::SetWorld(World& _world)
 {
